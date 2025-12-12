@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Entrance",
+    "contents": "You are in the entrance. There's a passage to the east and the north.",
+    "next": {
+      "east": "Hallway",
+      "north": "Trap Room"
+    },
+    "items": [],
+    "canUse": []
+  },
+  {
+    "name": "Trap Room",
+    "contents": "As you enter the room, the floor drops out from under you, revealing a pit of spikes! You plummet to your death!",
+    "items": [],
+    "canUse": [],
+    "damage": 1000
+  },
+  {
+    "name": "Hallway",
+    "contents": "You are in a hallway. There's a passage to the west and another to the north.",
+    "next": {
+      "west": "Entrance",
+      "north": "Antechamber"
+    },
+    "items": ["key"],
+    "canUse": []
+  },
+  {
+    "name": "Antechamber",
+    "contents": "You behold a grand door to the north. A hallway sits to the south.",
+    "next": {
+        "north": "Treasure Room",
+        "south": "Hallway"
+    },
+    "items": [],
+    "canUse": ["key"]
+  },
+  {
+    "name": "Treasure Room",
+    "contents": "You've found the treasure room!",
+    "next": {
+      "south": "Antechamber"
+    },
+    "items": ["treasure"],
+    "canUse": [],
+    "locked": "true"
+  }
+]
+

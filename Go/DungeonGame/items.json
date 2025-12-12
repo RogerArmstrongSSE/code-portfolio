@@ -1,0 +1,15 @@
+[
+    {
+        "name": "key",
+        "location": "There is a key here, glittering silver in the torchlight.",
+        "examine": "An ornate silver key. Surely this opens something wondrous.",
+        "use": "You attempt to use the key, and the door swings open, revealing the hidden treasure!",
+        "function": ["unlock", "Treasure Room"]
+    },
+    {
+        "name": "treasure",
+        "location": "You behold the treasure, a pile of gold coins and sparkling gemstones.",
+        "examine": "A fortune in treasure. You should escape before someone notices it's missing.",
+        "function": []
+    }
+]
