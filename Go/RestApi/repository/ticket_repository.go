@@ -94,3 +94,24 @@ func (r *TicketRepository) Delete(ctx context.Context, eventName string, purchas
 	_, err := r.collection.DeleteOne(ctx, filter)
 	return err
 }
+
+// GetTotalTickets retrieves the total number of tickets for an event
+func (r *TicketRepository) GetTotalTickets(ctx context.Context, eventName string) int {
+	filter := bson.M{"eventName": eventName}
+	cursor, err := r.collection.Aggregate(ctx, mongo.Pipeline{
+		{{Key: "$match", Value: filter}},
+		{{Key: "$group", Value: bson.M{"_id": "$eventName", "totalTickets": bson.M{"$sum": "$tickets"}}}},
+	})
+	if err != nil {
+		return 0
+	}
+	defer cursor.Close(ctx)
+
+	var result struct {
+		TotalTickets int `bson:"totalTickets"`
+	}
+	if err := cursor.Decode(&result); err != nil {
+		return 0
+	}
+	return result.TotalTickets
+}

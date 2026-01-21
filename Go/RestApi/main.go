@@ -19,6 +19,7 @@ import (
 	"restapi/repository"
 )
 
+var repo *repository.Repository
 var ticketRepo *repository.TicketRepository
 
 func init() {
@@ -49,13 +50,15 @@ func main() {
 	log.Println("Connected to MongoDB successfully")
 
 	// Initialize repository
-	ticketRepo = repository.NewTicketRepository()
+	repo = repository.NewRepository()
+	ticketRepo = repo.TicketRepository
 
 	// Setup routes
 	http.HandleFunc("/ticket", handleTicketPurchase)
 	http.HandleFunc("/tickets", handleGetTickets)
 	http.HandleFunc("/tickets/all", handleGetAllTickets)
 	http.HandleFunc("/ticket/delete", handleDeleteTicket)
+	http.HandleFunc("/events/all", handleGetAllEvents)
 
 	// Setup graceful shutdown
 	server := &http.Server{
@@ -210,4 +213,22 @@ func handleDeleteTicket(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Ticket purchase deleted successfully"})
+}
+
+func handleGetAllEvents(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	events, err := repo.GetAllEvents(ctx)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to retrieve events: %v", err), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(events)
 }
